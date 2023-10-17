@@ -3,12 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"io"
-	"os"
-	"os/signal"
-	"strings"
-	"syscall"
-
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -23,6 +17,11 @@ import (
 	"github.com/stateful/runme/internal/tui"
 	"github.com/stateful/runme/pkg/project"
 	"golang.org/x/exp/slices"
+	"io"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
 )
 
 const (

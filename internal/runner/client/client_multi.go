@@ -5,13 +5,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"regexp"
-	"sync"
-
 	"github.com/stateful/runme/internal/document"
 	"github.com/stateful/runme/internal/runner"
 	"github.com/stateful/runme/pkg/project"
+	"io"
+	"regexp"
+	"sync"
+	"time"
 )
 
 const stripAnsi = "[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))"
@@ -143,6 +143,12 @@ func (m MultiRunner) RunBlocks(ctx context.Context, blocks []project.FileCodeBlo
 
 		if !parallel {
 			err := run(fileBlock)
+			sleepDuration := fileBlock.GetBlock().Attributes()["waitAfter"]
+			if sleepDuration != "" {
+				d, _ := time.ParseDuration(sleepDuration)
+				_, _ = m.Runner.getSettings().stdout.Write([]byte(fmt.Sprintf("sleeping for %s\n", d.String())))
+				time.Sleep(d)
+			}
 			if err != nil {
 				return err
 			}
